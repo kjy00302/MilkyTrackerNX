@@ -17,7 +17,7 @@ void nxHooksInit() {
 		stdioRes = nxlinkStdio();
 	}
 
-	if(stdioRes != 0) {
+	if(stdioRes < 0) {
 		g_logfile = fopen("milkytracker.log", "w");
 		if(g_logfile != NULL) {
 			fflush(stdout);

@@ -24,9 +24,9 @@ int SDL_SendKeyboardKey(uint8_t state, SDL_Scancode scancode);
 
 static void _mapJoycons() {
 	for (int i = 0; i < NX_MAX_CONTROLLERS; i++) {
-		hidSetNpadJoyAssignmentModeDual((HidControllerID)i);
+		hidSetNpadJoyAssignmentModeDual((HidNpadIdType)i);
 	}
-	hidSetNpadJoyHoldType(HidJoyHoldType_Default);
+	hidSetNpadJoyHoldType(HidNpadJoyHoldType_Vertical);
 }
 
 uint32_t _timerSendControllerMouseMotionEvents(uint32_t interval, void *param) {
@@ -41,7 +41,7 @@ uint32_t _timerSendControllerMouseMotionEvents(uint32_t interval, void *param) {
 
 			int16_t speedstep = fastspeed ? NX_AXIS_FAST_SPEEDSTEP : NX_AXIS_SLOW_SPEEDSTEP;
 
-			SDL_SendMouseMotion(window, SDL_TOUCH_MOUSEID, 1, g_axis_x / speedstep, g_axis_y / speedstep);
+			SDL_SendMouseMotion(window, 0, 1, g_axis_x / speedstep, g_axis_y / speedstep);
 		}
 	}
 
@@ -97,10 +97,10 @@ static void _SendControllerMouseClick(bool down) {
 
 	if(window != NULL) {
 		if(down) {
-			SDL_SendMouseButton(window, SDL_TOUCH_MOUSEID, SDL_PRESSED, g_clicktoggle_held ? SDL_BUTTON_RIGHT : SDL_BUTTON_LEFT);
+			SDL_SendMouseButton(window, 0, SDL_PRESSED, g_clicktoggle_held ? SDL_BUTTON_RIGHT : SDL_BUTTON_LEFT);
 		} else {
-			SDL_SendMouseButton(window, SDL_TOUCH_MOUSEID, SDL_RELEASED, SDL_BUTTON_LEFT);
-			SDL_SendMouseButton(window, SDL_TOUCH_MOUSEID, SDL_RELEASED, SDL_BUTTON_RIGHT);
+			SDL_SendMouseButton(window, 0, SDL_RELEASED, SDL_BUTTON_LEFT);
+			SDL_SendMouseButton(window, 0, SDL_RELEASED, SDL_BUTTON_RIGHT);
 		}
 	}
 }
@@ -114,7 +114,6 @@ static void _fingerUpdateMouseCoords(SDL_Event* event) {
 }
 
 int nxHooksSDLPollEvents(SDL_Event* event) {
-	_mapJoycons();
 	int result = SDL_PollEvent(event);
 
 	if(result) {
